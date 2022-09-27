@@ -187,6 +187,11 @@ class Api extends Component
     protected function api(string $channelId): PublisherAPI
     {
         $channel = Plugin::getInstance()->channelManager->getChannelById($channelId);
-        return new PublisherAPI($channel->getApiKeyId(), $channel->getApiSecret(), 'https://news-api.apple.com');
+        $publisherApi = new PublisherAPI($channel->getApiKeyId(), $channel->getApiSecret(), 'https://news-api.apple.com');
+
+        $client = new \Curl\Curl;
+        $client->setTimeout(Plugin::getInstance()->getSettings()->httpClientTimeout);
+        $publisherApi->client = $client;
+        return $publisherApi;
     }
 }
